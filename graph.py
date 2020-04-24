@@ -100,5 +100,9 @@ class Graph(object):
                 pass
         return True
 
-
+    def get_adjacent_vertices(self, vertex: str) -> List[str]:
+        if vertex in self.vertex_collection:
+            return list(self._graph_dict[vertex])
+        else:
+            return [f'{vertex} not in graph']
 
