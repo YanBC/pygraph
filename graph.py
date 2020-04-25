@@ -132,6 +132,9 @@ class Graph(object):
 
     def find_simple_path_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
         if track is None:
+            all_vertices = self.vertex_collection
+            if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
+                return None
             track = [start_vertex]
 
         if start_vertex == end_vertex:
@@ -147,6 +150,9 @@ class Graph(object):
 
     def find_all_simple_paths_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
         if track is None:
+            all_vertices = self.vertex_collection
+            if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
+                return None
             track = [start_vertex]
 
         if start_vertex == end_vertex:
