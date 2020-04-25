@@ -4,12 +4,10 @@ if __name__ == '__main__':
     ###########################
     # Test 1
     ###########################
-    graph_file1 = 'test1_graph.txt'
-
     g1 = Graph()
-    g1.initialize_from_file(graph_file)
+    g1.initialize_from_file('test1_graph.txt')
     print(f'{g1.to_dict()}\n')
-    print(g1)
+    # print(g1)
 
     assert sorted(g1.vertex_collection) == ['a', 'b', 'c', 'd', 'e', 'f']
     edges = g1.edge_collection
@@ -29,9 +27,22 @@ if __name__ == '__main__':
     ###########################
     # Test 2
     ###########################
-    assert g1.find_simple_path_dfs('a','b') == ['a', 'd', 'c', 'b']
-    assert g1.find_all_simple_paths_dfs('a','b') == [['a', 'd', 'c', 'b']]
-    assert g1.remove_vertex('c')
+    g2 = Graph()
+    g2.initialize_from_dict(g1.to_dict())
 
+    assert g2.find_simple_path_dfs('a','b') == ['a', 'd', 'c', 'b']
+    assert g2.find_all_simple_paths_dfs('a','b') == [['a', 'd', 'c', 'b']]
+    assert g2.remove_vertex('c')
 
+    g2.initialize_from_file('test2_graph.txt')
+    # print(g2)
 
+    paths = g2.find_all_simple_paths_dfs('a','b')
+    for path in paths:
+        assert path in [['a', 'd', 'c', 'b'], ['a', 'f', 'd', 'c', 'b']]
+
+    paths = g2.find_all_simple_paths_dfs('a','f')
+    for path in paths:
+        assert path in [['a', 'd', 'f'], ['a', 'f']]
+
+    assert g2.find_all_simple_paths_dfs('c','c') == [['c']]
