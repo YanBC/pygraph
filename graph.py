@@ -1,6 +1,6 @@
 from typing import Tuple, List, Set
 from functools import lru_cache
-
+from copy import deepcopy
 
 
 
@@ -49,7 +49,7 @@ class Graph(object):
     # methods
     #################
     def to_dict(self) -> dict:
-        ret_dict = self._graph_dict.copy()
+        ret_dict = deepcopy(self._graph_dict)
         return ret_dict
 
     def add_vertex(self, new_vertex:str) -> bool:
@@ -103,7 +103,7 @@ class Graph(object):
             return False
 
     def initialize_from_dict(self, d:dict) -> bool:
-        self._graph_dict = d
+        self._graph_dict = deepcopy(d)
         return True
 
     def initialize_from_file(self, filePath:str, delimiter:str=' ') -> bool:
@@ -113,6 +113,7 @@ class Graph(object):
             print(f'File not exits: {filePath}')
             return False
 
+        self._graph_dict = dict()
         edge_strs = f.readlines()
         for edge_str in edge_strs:
             v_list = edge_str.strip().split(delimiter)
