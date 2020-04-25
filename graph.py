@@ -5,8 +5,10 @@ from functools import lru_cache
 
 
 '''
-vertext is represented by a str
-edge is represented by a Set[str]
+Abstract representation:
+vertex:     str
+edge:        Set[str]
+path:        List[str]
 
 A undirected simple graph implementation
 
@@ -50,14 +52,27 @@ class Graph(object):
         ret_dict = self._graph_dict.copy()
         return ret_dict
 
-    def add_vertex(self, new_vertex: str) -> bool:
+    def add_vertex(self, new_vertex:str) -> bool:
         if new_vertex not in self.vertex_collection:
             self._graph_dict[new_vertex] = set()
             return True
         else:
             return False
 
-    def add_edge(self, new_edge: Set[str]) -> bool:
+    def remove_vertex(self, vertex_tobe_remove:str) -> bool:
+        if vertex_tobe_remove in self.vertex_collection:
+            adjacent_vertices = list(self._graph_dict[vertex_tobe_remove])
+
+            node_a = vertex_tobe_remove
+            for node_b in adjacent_vertices:
+                self.remove_edge({node_a, node_b})
+
+            self._graph_dict.pop(vertex_tobe_remove)
+            return True
+        else:
+            return False
+
+    def add_edge(self, new_edge:Set[str]) -> bool:
         node_a, node_b = new_edge
         vertices = self.vertex_collection
         a_is_new = node_a not in vertices
@@ -78,11 +93,20 @@ class Graph(object):
                 return True
         return False
 
-    def initialize_from_dict(self, d: dict) -> bool:
+    def remove_edge(self, edge_tobe_removed:Set[str]) -> bool:
+        node_a, node_b = edge_tobe_removed
+        if node_a in self._graph_dict[node_b] and node_b in self._graph_dict[node_a]:
+            self._graph_dict[node_a].remove(node_b)
+            self._graph_dict[node_b].remove(node_a)
+            return True
+        else:
+            return False
+
+    def initialize_from_dict(self, d:dict) -> bool:
         self._graph_dict = d
         return True
 
-    def initialize_from_file(self, filePath: str, delimiter: str = ' ') -> bool:
+    def initialize_from_file(self, filePath:str, delimiter:str=' ') -> bool:
         try:
             f = open(filePath)
         except FileNotFoundError:
@@ -100,9 +124,38 @@ class Graph(object):
                 pass
         return True
 
-    def get_adjacent_vertices(self, vertex: str) -> List[str]:
+    def get_adjacent_vertices(self, vertex:str) -> List[str]:
         if vertex in self.vertex_collection:
             return list(self._graph_dict[vertex])
         else:
             return [f'{vertex} not in graph']
+
+    def find_simple_path_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
+        if track is None:
+            track = [start_vertex]
+
+        if start_vertex == end_vertex:
+            return track
+
+        for vertex in self._graph_dict[start_vertex]:
+            if not (vertex in track):
+                tmp_track = track + [vertex]
+                path = self.find_simple_path_dfs(vertex, end_vertex, tmp_track)
+                if path is not None:
+                    return path
+        return None
+
+    def find_all_simple_paths_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
+        if track is None:
+            track = [start_vertex]
+
+        if start_vertex == end_vertex:
+            return [track]
+
+        all_paths = []
+        for vertex in self._graph_dict[start_vertex]:
+            if vertex not in track:
+                tmp_track = track + [vertex]
+                all_paths += self.find_all_simple_paths_dfs(vertex, end_vertex, tmp_track)
+        return all_paths
 
