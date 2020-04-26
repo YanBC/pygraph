@@ -6,7 +6,7 @@ if __name__ == '__main__':
     ###########################
     g1 = Graph()
     g1.initialize_from_file('test1_graph.txt')
-    print(f'{g1.to_dict()}\n')
+    # print(f'{g1.to_dict()}\n')
     # print(g1)
 
     assert sorted(g1.vertex_collection) == ['a', 'b', 'c', 'd', 'e', 'f']
@@ -46,3 +46,7 @@ if __name__ == '__main__':
         assert path in [['a', 'd', 'f'], ['a', 'f']]
 
     assert g2.find_all_simple_paths_dfs('c','c') == [['c']]
+
+    assert g2.find_cluster_dfs('a') == ['a', 'd', 'c', 'b', 'e', 'f']
+    assert g2.find_cluster_dfs('b') == ['b', 'c', 'd', 'a', 'f', 'e']
+    assert g2.find_cluster_dfs('c') == ['c', 'b', 'd', 'a', 'f', 'e']

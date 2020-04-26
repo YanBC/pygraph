@@ -6,11 +6,12 @@ from copy import deepcopy
 
 '''
 Abstract representation:
-vertex:     str
-edge:        Set[str]
-path:        List[str]
+vertex:                         str
+edge:                           Set[str]
+path:                           List[str]
 
-A undirected simple graph implementation
+An undirected simple graph implementation
+Graph._graph_dict:              Dict[Set[str]]
 
 '''
 class Graph(object):
@@ -71,6 +72,9 @@ class Graph(object):
             return True
         else:
             return False
+
+    def add_edge(self, vertex_a:str, vertex_b:str) -> bool:
+        return self.add_edge({vertex_a, vertex_b})
 
     def add_edge(self, new_edge:Set[str]) -> bool:
         node_a, node_b = new_edge
@@ -166,28 +170,27 @@ class Graph(object):
                 all_paths += self.find_all_simple_paths_dfs(vertex, end_vertex, tmp_track)
         return all_paths
 
-    def find_cluster_dfs(self, vertex:str) -> Set[str]:
+    def find_cluster_dfs(self, vertex:str) -> List[str]:
         if not vertex in self.vertex_collection:
             return []
+        vertices = []
+        stack = [vertex]
+        visited = {vertex}
 
-        vertices = {vertex}
-        queue = [vertex]
-
-        while queue:
-            node = queue.pop()
-            for adjacent in self._graph_dict[node]:
-                if adjacent not in vertices:
-                    vertices.add(adjacent)
-                    queue.append(adjacent)
-
+        while stack:
+            node = stack.pop()
+            vertices.append(node)
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
+                if adjacent not in visited:
+                    visited.add(adjacent)
+                    stack.append(adjacent)
         return vertices
 
     def find_all_clusters_dfs(self) -> List[Set[str]]:
         clusters = []
         for v in self.vertex_collection:
-            c = self.find_cluster_dfs(v)
+            c = set(self.find_cluster_dfs(v))
             if c not in clusters:
                 clusters.append(c)
         return clusters
 
-    
