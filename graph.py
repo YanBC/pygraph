@@ -15,8 +15,10 @@ Graph._graph_dict:              Dict[Set[str]]
 
 '''
 class Graph(object):
+
     def __init__(self):
         self._graph_dict = dict()
+
 
     def __repr__(self):
         edge_list = [list(edge) for edge in self.edge_collection]
@@ -29,12 +31,14 @@ class Graph(object):
 
         return graph_str
 
+
     #################
     # properties
     #################
     @property
     def vertex_collection(self) -> list:
         return list(self._graph_dict.keys())
+
 
     @property
     def edge_collection(self) -> list:
@@ -46,6 +50,7 @@ class Graph(object):
                     all_edges.append(tmp_edge)
         return all_edges
 
+
     #################
     # methods
     #################
@@ -53,12 +58,14 @@ class Graph(object):
         ret_dict = deepcopy(self._graph_dict)
         return ret_dict
 
+
     def add_vertex(self, new_vertex:str) -> bool:
         if new_vertex not in self.vertex_collection:
             self._graph_dict[new_vertex] = set()
             return True
         else:
             return False
+
 
     def remove_vertex(self, vertex_tobe_remove:str) -> bool:
         if vertex_tobe_remove in self.vertex_collection:
@@ -73,8 +80,10 @@ class Graph(object):
         else:
             return False
 
+
     def add_edge(self, vertex_a:str, vertex_b:str) -> bool:
         return self.add_edge({vertex_a, vertex_b})
+
 
     def add_edge(self, new_edge:Set[str]) -> bool:
         node_a, node_b = new_edge
@@ -97,6 +106,7 @@ class Graph(object):
                 return True
         return False
 
+
     def remove_edge(self, edge_tobe_removed:Set[str]) -> bool:
         node_a, node_b = edge_tobe_removed
         if node_a in self._graph_dict[node_b] and node_b in self._graph_dict[node_a]:
@@ -106,9 +116,11 @@ class Graph(object):
         else:
             return False
 
+
     def initialize_from_dict(self, d:dict) -> bool:
         self._graph_dict = deepcopy(d)
         return True
+
 
     def initialize_from_file(self, filePath:str, delimiter:str=' ') -> bool:
         try:
@@ -129,11 +141,13 @@ class Graph(object):
                 pass
         return True
 
+
     def get_adjacent_vertices(self, vertex:str) -> List[str]:
         if vertex in self.vertex_collection:
             return list(self._graph_dict[vertex])
         else:
             return [f'{vertex} not in graph']
+
 
     def find_simple_path_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
         if track is None:
@@ -153,6 +167,7 @@ class Graph(object):
                     return path
         return None
 
+
     def find_all_simple_paths_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
         if track is None:
             all_vertices = self.vertex_collection
@@ -169,6 +184,7 @@ class Graph(object):
                 tmp_track = track + [vertex]
                 all_paths += self.find_all_simple_paths_dfs_recursive(vertex, end_vertex, tmp_track)
         return all_paths
+
 
     def find_cluster_dfs(self, vertex:str) -> List[str]:
         if not vertex in self.vertex_collection:
@@ -187,6 +203,7 @@ class Graph(object):
                     stack.append(adjacent)
         return vertices
 
+
     def find_all_clusters_dfs(self) -> List[Set[str]]:
         clusters = []
         for v in self.vertex_collection:
@@ -194,6 +211,7 @@ class Graph(object):
             if c not in clusters:
                 clusters.append(c)
         return clusters
+
 
     def find_simple_path_dfs(self, start_vertex:str, end_vertex:str) -> List[str]:
         all_vertices = self.vertex_collection
