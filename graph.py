@@ -166,3 +166,28 @@ class Graph(object):
                 all_paths += self.find_all_simple_paths_dfs(vertex, end_vertex, tmp_track)
         return all_paths
 
+    def find_cluster_dfs(self, vertex:str) -> Set[str]:
+        if not vertex in self.vertex_collection:
+            return []
+
+        vertices = {vertex}
+        queue = [vertex]
+
+        while queue:
+            node = queue.pop()
+            for adjacent in self._graph_dict[node]:
+                if adjacent not in vertices:
+                    vertices.add(adjacent)
+                    queue.append(adjacent)
+
+        return vertices
+
+    def find_all_clusters_dfs(self) -> List[Set[str]]:
+        clusters = []
+        for v in self.vertex_collection:
+            c = self.find_cluster_dfs(v)
+            if c not in clusters:
+                clusters.append(c)
+        return clusters
+
+    
