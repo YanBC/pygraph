@@ -135,7 +135,7 @@ class Graph(object):
         else:
             return [f'{vertex} not in graph']
 
-    def find_simple_path_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
+    def find_simple_path_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
         if track is None:
             all_vertices = self.vertex_collection
             if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
@@ -148,12 +148,12 @@ class Graph(object):
         for vertex in self._graph_dict[start_vertex]:
             if not (vertex in track):
                 tmp_track = track + [vertex]
-                path = self.find_simple_path_dfs(vertex, end_vertex, tmp_track)
+                path = self.find_simple_path_dfs_recursive(vertex, end_vertex, tmp_track)
                 if path is not None:
                     return path
         return None
 
-    def find_all_simple_paths_dfs(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
+    def find_all_simple_paths_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
         if track is None:
             all_vertices = self.vertex_collection
             if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
@@ -167,12 +167,13 @@ class Graph(object):
         for vertex in self._graph_dict[start_vertex]:
             if vertex not in track:
                 tmp_track = track + [vertex]
-                all_paths += self.find_all_simple_paths_dfs(vertex, end_vertex, tmp_track)
+                all_paths += self.find_all_simple_paths_dfs_recursive(vertex, end_vertex, tmp_track)
         return all_paths
 
     def find_cluster_dfs(self, vertex:str) -> List[str]:
         if not vertex in self.vertex_collection:
             return []
+
         vertices = []
         stack = [vertex]
         visited = {vertex}
@@ -193,4 +194,43 @@ class Graph(object):
             if c not in clusters:
                 clusters.append(c)
         return clusters
+
+    def find_simple_path_dfs(self, start_vertex:str, end_vertex:str) -> List[str]:
+        all_vertices = self.vertex_collection
+        if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
+            return []
+
+        stack = [[start_vertex]]
+        visited = [start_vertex]
+        
+        while stack:
+            path = stack.pop()
+            node = path[-1]
+
+            if node == end_vertex:
+                break
+            else:
+                for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
+                    if adjacent not in visited:
+                        visited.append(adjacent)
+                        stack.append(path + [adjacent])
+
+        if path[-1] == end_vertex:
+            return path
+        else:
+            return []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

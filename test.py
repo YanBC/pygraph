@@ -30,23 +30,26 @@ if __name__ == '__main__':
     g2 = Graph()
     g2.initialize_from_dict(g1.to_dict())
 
-    assert g2.find_simple_path_dfs('a','b') == ['a', 'd', 'c', 'b']
-    assert g2.find_all_simple_paths_dfs('a','b') == [['a', 'd', 'c', 'b']]
+    assert g2.find_simple_path_dfs_recursive('a','b') == ['a', 'd', 'c', 'b']
+    assert g2.find_all_simple_paths_dfs_recursive('a','b') == [['a', 'd', 'c', 'b']]
     assert g2.remove_vertex('c')
 
     g2.initialize_from_file('test2_graph.txt')
     # print(g2)
 
-    paths = g2.find_all_simple_paths_dfs('a','b')
+    paths = g2.find_all_simple_paths_dfs_recursive('a','b')
     for path in paths:
         assert path in [['a', 'd', 'c', 'b'], ['a', 'f', 'd', 'c', 'b']]
 
-    paths = g2.find_all_simple_paths_dfs('a','f')
+    paths = g2.find_all_simple_paths_dfs_recursive('a','f')
     for path in paths:
         assert path in [['a', 'd', 'f'], ['a', 'f']]
 
-    assert g2.find_all_simple_paths_dfs('c','c') == [['c']]
+    assert g2.find_all_simple_paths_dfs_recursive('c','c') == [['c']]
 
     assert g2.find_cluster_dfs('a') == ['a', 'd', 'c', 'b', 'e', 'f']
     assert g2.find_cluster_dfs('b') == ['b', 'c', 'd', 'a', 'f', 'e']
     assert g2.find_cluster_dfs('c') == ['c', 'b', 'd', 'a', 'f', 'e']
+
+    g2.find_simple_path_dfs('a', 'b') == ['a', 'd', 'c', 'b']
+
