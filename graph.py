@@ -153,6 +153,8 @@ class Graph(object):
             return [f'{vertex} not in graph']
 
 
+    # This function can potentially run faster if introduced a 
+    # visted list which keeps track of all visited nodes
     def find_simple_path_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
         if track is None:
             all_vertices = self.vertex_collection
@@ -201,10 +203,12 @@ class Graph(object):
         while stack:
             node = stack.pop()
             vertices.append(node)
+
             for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
                 if adjacent not in visited:
                     visited.append(adjacent)
                     stack.append(adjacent)
+
         return vertices
 
 
@@ -256,12 +260,27 @@ class Graph(object):
 
             for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
                 if adjacent not in path:
-                    tmp_path = path.copy()
-                    tmp_path.append(adjacent)
-                    stack.append(tmp_path)
+                    stack.append(path + [adjacent])
 
         return all_paths
 
 
+    def is_connected_dfs(self, vertex_a:str, vertex_b:str) -> bool:
+        all_vertices = self.vertex_collection
+        if (vertex_a not in all_vertices) or (vertex_b not in all_vertices):
+            return False
 
+        stack = [vertex_a]
+        visited = [vertex_a]
 
+        while stack:
+            node = stack.pop()
+            if node == vertex_b:
+                return True
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
+                if adjacent not in visited:
+                    visited.append(adjacent)
+                    stack.append(adjacent)
+
+        return False
