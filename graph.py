@@ -73,7 +73,7 @@ class Graph(object):
 
             node_a = vertex_tobe_remove
             for node_b in adjacent_vertices:
-                self.remove_edge({node_a, node_b})
+                self._remove_edge({node_a, node_b})
 
             self._graph_dict.pop(vertex_tobe_remove)
             return True
@@ -82,10 +82,14 @@ class Graph(object):
 
 
     def add_edge(self, vertex_a:str, vertex_b:str) -> bool:
-        return self.add_edge({vertex_a, vertex_b})
+        return self._add_edge({vertex_a, vertex_b})
 
 
-    def add_edge(self, new_edge:Set[str]) -> bool:
+    def remove_edge(self, vertex_a:str, vertex_b:str) -> bool:
+        return self._remove_edge({vertex_a, vertex_b})
+
+
+    def _add_edge(self, new_edge:Set[str]) -> bool:
         node_a, node_b = new_edge
         vertices = self.vertex_collection
         a_is_new = node_a not in vertices
@@ -107,7 +111,7 @@ class Graph(object):
         return False
 
 
-    def remove_edge(self, edge_tobe_removed:Set[str]) -> bool:
+    def _remove_edge(self, edge_tobe_removed:Set[str]) -> bool:
         node_a, node_b = edge_tobe_removed
         if node_a in self._graph_dict[node_b] and node_b in self._graph_dict[node_a]:
             self._graph_dict[node_a].remove(node_b)
@@ -136,7 +140,7 @@ class Graph(object):
             if len(v_list) == 1:
                 self.add_vertex(v_list[0])
             elif len(v_list) == 2:
-                self.add_edge({v_list[0], v_list[1]})
+                self._add_edge({v_list[0], v_list[1]})
             else:
                 pass
         return True
@@ -192,14 +196,14 @@ class Graph(object):
 
         vertices = []
         stack = [vertex]
-        visited = {vertex}
+        visited = [vertex]
 
         while stack:
             node = stack.pop()
             vertices.append(node)
             for adjacent in sorted(list(self._graph_dict[node]), reverse=True):
                 if adjacent not in visited:
-                    visited.add(adjacent)
+                    visited.append(adjacent)
                     stack.append(adjacent)
         return vertices
 
@@ -238,15 +242,19 @@ class Graph(object):
         else:
             return []
 
+    ## you should not use visited
+    # def find_all_simple_paths_dfs(self, start_vertex:str, end_vertex:str) -> List[List[str]]:
+    #     all_vertices = self.vertex_collection
+    #     if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
+    #         return []
 
 
-
-
-
-
-
-
-
+'''
+To-do:
+0. take a look at python function overloading
+1. modify all methods that accept a Set or return a Set
+2. finish find_all_simple_paths_dfs
+'''
 
 
 

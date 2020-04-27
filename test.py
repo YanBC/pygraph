@@ -20,9 +20,8 @@ if __name__ == '__main__':
     g1.add_vertex('z')
     assert sorted(g1.vertex_collection) == ['a', 'b', 'c', 'd', 'e', 'f', 'z'] 
 
-    tmp_edge = {'a', 'z'}
-    g1.add_edge(tmp_edge)
-    assert tmp_edge in g1.edge_collection
+    g1.add_edge('a', 'z')
+    assert {'a', 'z'} in g1.edge_collection
 
     ###########################
     # Test 2
@@ -51,5 +50,5 @@ if __name__ == '__main__':
     assert g2.find_cluster_dfs('b') == ['b', 'c', 'd', 'a', 'f', 'e']
     assert g2.find_cluster_dfs('c') == ['c', 'b', 'd', 'a', 'f', 'e']
 
-    g2.find_simple_path_dfs('a', 'b') == ['a', 'd', 'c', 'b']
+    assert g2.find_simple_path_dfs('a', 'b') == ['a', 'd', 'c', 'b']
 
