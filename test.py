@@ -52,3 +52,12 @@ if __name__ == '__main__':
 
     assert g2.find_simple_path_dfs('a', 'b') == ['a', 'd', 'c', 'b']
 
+    paths = g2.find_all_simple_paths_dfs('a','b')
+    for path in paths:
+        assert path in [['a', 'd', 'c', 'b'], ['a', 'f', 'd', 'c', 'b']]
+
+    paths = g2.find_all_simple_paths_dfs('a','f')
+    for path in paths:
+        assert path in [['a', 'd', 'f'], ['a', 'f']]
+
+    assert g2.find_all_simple_paths_dfs('c','c') == [['c']]
