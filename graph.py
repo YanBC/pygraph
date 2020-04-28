@@ -265,7 +265,7 @@ class Graph(object):
         return all_paths
 
 
-    def is_connected_dfs(self, vertex_a:str, vertex_b:str) -> bool:
+    def is_connected_with_dfs(self, vertex_a:str, vertex_b:str) -> bool:
         all_vertices = self.vertex_collection
         if (vertex_a not in all_vertices) or (vertex_b not in all_vertices):
             return False
@@ -284,3 +284,146 @@ class Graph(object):
                     stack.append(adjacent)
 
         return False
+
+
+    def find_cluster_bfs(self, vertex:str) -> List[str]:
+        if not vertex in self.vertex_collection:
+            return []
+
+        vertices = []
+        stack = [vertex]
+        visited = [vertex]
+
+        while stack:
+            node = stack.pop(0)
+            vertices.append(node)
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=False):
+                if adjacent not in visited:
+                    visited.append(adjacent)
+                    stack.append(adjacent)
+
+        return vertices
+
+
+    # new universal search methods
+    def _func_search_check_input(self, *args, mode:str) -> bool:
+        if mode not in ['dfs', 'bfs']:
+            return False
+        for vertex in args:
+            if vertex not in self.vertex_collection:
+                return False
+        return True
+
+
+    def _func_search_parse_mode(self, mode:str) -> Tuple:
+        if mode == 'dfs':
+            stack_pop_index = -1
+            sort_order_reverse = True
+        elif mode == 'bfs':
+            stack_pop_index = 0
+            sort_order_reverse = False
+        return stack_pop_index, sort_order_reverse
+        
+
+    def find_cluster(self, vertex:str, mode:str='dfs') -> List[str]:
+        if not self._func_search_check_input(vertex, mode):
+            raise ValueError('please check your input arguments')
+        pop_index, order_reverse = self._func_search_parse_mode(mode)
+
+        vertices = []
+        stack = [vertex]
+        visited = [vertex]
+
+        while stack:
+            node = stack.pop(pop_index)
+            vertices.append(node)
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=order_reverse):
+                if adjacent not in visited:
+                    visited.append(adjacent)
+                    stack.append(adjacent)
+
+        return vertices
+
+
+    def find_all_clusters(self, mode:str='dfs') -> List[Set[str]]:
+        if not self._func_search_check_input(mode):
+            raise ValueError('please check your input arguments')
+
+        clusters = []
+        for v in self.vertex_collection:
+            c = set(self.find_cluster(v, mode))
+            if c not in clusters:
+                clusters.append(c)
+        return clusters
+
+
+    def find_simple_path(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[str]:
+        if not self._func_search_check_input(start_vertex, end_vertex, mode):
+            raise ValueError('please check your input arguments')
+        pop_index, order_reverse = self._func_search_parse_mode(mode)
+
+        stack = [[start_vertex]]
+        visited = [start_vertex]
+        
+        while stack:
+            path = stack.pop(pop_index)
+            node = path[-1]
+            if node == end_vertex:
+                return path
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=order_reverse):
+                if adjacent not in visited:
+                    visited.append(adjacent)
+                    stack.append(path + [adjacent])
+        
+        return []
+
+ 
+    def find_all_simple_paths(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[List[str]]:
+        if not self._func_search_check_input(start_vertex, end_vertex, mode):
+            raise ValueError('please check your input arguments')
+        pop_index, order_reverse = self._func_search_parse_mode(mode)
+
+        stack = [[start_vertex]]
+        all_paths = []
+
+        while stack:
+            path = stack.pop(pop_index)
+            node = path[-1]
+            if node == end_vertex:
+                all_paths.append(path)
+                continue
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=order_reverse):
+                if adjacent not in path:
+                    stack.append(path + [adjacent])
+
+        return all_paths
+
+
+    def is_connected_with(self, vertex_a:str, vertex_b:str, mode:str='dfs') -> bool:
+        if not self._func_search_check_input(vertex_a, vertex_b, mode):
+            raise ValueError('please check your input arguments')
+        pop_index, order_reverse = self._func_search_parse_mode(mode)
+
+        stack = [vertex_a]
+        visited = [vertex_a]
+
+        while stack:
+            node = stack.pop(pop_index)
+            if node == vertex_b:
+                return True
+
+            for adjacent in sorted(list(self._graph_dict[node]), reverse=order_reverse):
+                if adjacent not in visited:
+                    visited.append(adjacent)
+                    stack.append(adjacent)
+
+        return False
+
+
+
+
+
