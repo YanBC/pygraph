@@ -307,7 +307,7 @@ class Graph(object):
 
 
     # new universal search methods
-    def _func_search_check_input(self, *args, mode:str) -> bool:
+    def _func_search_check_input(self, mode:str, *args) -> bool:
         if mode not in ['dfs', 'bfs']:
             return False
         for vertex in args:
@@ -327,7 +327,7 @@ class Graph(object):
         
 
     def find_cluster(self, vertex:str, mode:str='dfs') -> List[str]:
-        if not self._func_search_check_input(vertex, mode):
+        if not self._func_search_check_input(mode, vertex):
             raise ValueError('please check your input arguments')
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
@@ -360,7 +360,7 @@ class Graph(object):
 
 
     def find_simple_path(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[str]:
-        if not self._func_search_check_input(start_vertex, end_vertex, mode):
+        if not self._func_search_check_input(mode, start_vertex, end_vertex):
             raise ValueError('please check your input arguments')
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
@@ -382,7 +382,7 @@ class Graph(object):
 
  
     def find_all_simple_paths(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[List[str]]:
-        if not self._func_search_check_input(start_vertex, end_vertex, mode):
+        if not self._func_search_check_input(mode, start_vertex, end_vertex):
             raise ValueError('please check your input arguments')
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
@@ -404,7 +404,7 @@ class Graph(object):
 
 
     def is_connected_with(self, vertex_a:str, vertex_b:str, mode:str='dfs') -> bool:
-        if not self._func_search_check_input(vertex_a, vertex_b, mode):
+        if not self._func_search_check_input(mode, vertex_a, vertex_b):
             raise ValueError('please check your input arguments')
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 

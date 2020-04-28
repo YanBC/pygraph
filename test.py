@@ -61,3 +61,39 @@ if __name__ == '__main__':
         assert path in [['a', 'd', 'f'], ['a', 'f']]
 
     assert g2.find_all_simple_paths_dfs('c','c') == [['c']]
+
+
+    # test new search method
+
+    assert g2.find_cluster('a', 'dfs') == ['a', 'd', 'c', 'b', 'e', 'f']
+    assert g2.find_cluster('b', 'dfs') == ['b', 'c', 'd', 'a', 'f', 'e']
+    assert g2.find_cluster('c', 'dfs') == ['c', 'b', 'd', 'a', 'f', 'e']
+
+    assert g2.find_simple_path('a', 'b', 'dfs') == ['a', 'd', 'c', 'b']
+
+    paths = g2.find_all_simple_paths('a','b', 'dfs')
+    for path in paths:
+        assert path in [['a', 'd', 'c', 'b'], ['a', 'f', 'd', 'c', 'b']]
+
+    paths = g2.find_all_simple_paths('a','f', 'dfs')
+    for path in paths:
+        assert path in [['a', 'd', 'f'], ['a', 'f']]
+
+    assert g2.find_all_simple_paths('c','c', 'dfs') == [['c']]
+
+
+    assert g2.find_cluster('a', 'bfs') == ['a', 'd', 'f', 'c', 'b', 'e']
+    assert g2.find_cluster('b', 'bfs') == ['b', 'c', 'd', 'e', 'a', 'f']
+    assert g2.find_cluster('c', 'bfs') == ['c', 'b', 'd', 'e', 'a', 'f']
+
+    assert g2.find_simple_path('a', 'b', 'bfs') == ['a', 'd', 'c', 'b']
+
+    paths = g2.find_all_simple_paths('a','b', 'bfs')
+    for path in paths:
+        assert path in [['a', 'd', 'c', 'b'], ['a', 'f', 'd', 'c', 'b']]
+
+    paths = g2.find_all_simple_paths('a','f', 'bfs')
+    for path in paths:
+        assert path in [['a', 'd', 'f'], ['a', 'f']]
+
+    assert g2.find_all_simple_paths('c','c', 'bfs') == [['c']]
