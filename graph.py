@@ -116,12 +116,14 @@ class Graph(object):
     def initialize_from_file(self, filePath: str, delimiter: str = " ") -> bool:
         try:
             f = open(filePath)
+            edge_strs = f.readlines()
         except FileNotFoundError:
             print(f"File not exits: {filePath}")
             return False
+        finally:
+            f.close()
 
         self._graph_dict = dict()
-        edge_strs = f.readlines()
         for edge_str in edge_strs:
             v_list = edge_str.strip().split(delimiter)
             if len(v_list) == 1:
@@ -134,7 +136,7 @@ class Graph(object):
 
     def get_adjacent_vertices(self, vertex: str) -> List[str]:
         if vertex in self.vertex_collection:
-            return list(self._graph_dict[vertex])
+            return sorted(list(self._graph_dict[vertex]))
         else:
             return [f"{vertex} not in graph"]
 
