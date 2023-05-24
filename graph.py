@@ -1,10 +1,8 @@
-from typing import Tuple, List, Set
-from functools import lru_cache
 from copy import deepcopy
+from functools import lru_cache
+from typing import List, Set, Tuple
 
-
-
-'''
+"""
 Abstract representation:
 vertex:                         str
 edge:                           Set[str]
@@ -13,24 +11,23 @@ path:                           List[str]
 An undirected simple graph implementation
 Graph._graph_dict:              Dict[Set[str]]
 
-'''
-class Graph(object):
+"""
 
+
+class Graph(object):
     def __init__(self):
         self._graph_dict = dict()
-
 
     def __repr__(self):
         edge_list = [list(edge) for edge in self.edge_collection]
         edge_list = sorted(edge_list)
 
-        graph_str = f'Vertices: {sorted(self.vertex_collection)}\n'
-        graph_str += 'Edges:\n'
+        graph_str = f"Vertices: {sorted(self.vertex_collection)}\n"
+        graph_str += "Edges:\n"
         for edge in edge_list:
-            graph_str += f'    {edge[0]} -- {edge[1]}\n'
+            graph_str += f"    {edge[0]} -- {edge[1]}\n"
 
         return graph_str
-
 
     #################
     # properties
@@ -38,7 +35,6 @@ class Graph(object):
     @property
     def vertex_collection(self) -> list:
         return list(self._graph_dict.keys())
-
 
     @property
     def edge_collection(self) -> list:
@@ -50,7 +46,6 @@ class Graph(object):
                     all_edges.append(tmp_edge)
         return all_edges
 
-
     #################
     # methods
     #################
@@ -58,16 +53,14 @@ class Graph(object):
         ret_dict = deepcopy(self._graph_dict)
         return ret_dict
 
-
-    def add_vertex(self, new_vertex:str) -> bool:
+    def add_vertex(self, new_vertex: str) -> bool:
         if new_vertex not in self.vertex_collection:
             self._graph_dict[new_vertex] = set()
             return True
         else:
             return False
 
-
-    def remove_vertex(self, vertex_tobe_remove:str) -> bool:
+    def remove_vertex(self, vertex_tobe_remove: str) -> bool:
         if vertex_tobe_remove in self.vertex_collection:
             adjacent_vertices = list(self._graph_dict[vertex_tobe_remove])
 
@@ -80,16 +73,13 @@ class Graph(object):
         else:
             return False
 
-
-    def add_edge(self, vertex_a:str, vertex_b:str) -> bool:
+    def add_edge(self, vertex_a: str, vertex_b: str) -> bool:
         return self._add_edge({vertex_a, vertex_b})
 
-
-    def remove_edge(self, vertex_a:str, vertex_b:str) -> bool:
+    def remove_edge(self, vertex_a: str, vertex_b: str) -> bool:
         return self._remove_edge({vertex_a, vertex_b})
 
-
-    def _add_edge(self, new_edge:Set[str]) -> bool:
+    def _add_edge(self, new_edge: Set[str]) -> bool:
         node_a, node_b = new_edge
         vertices = self.vertex_collection
         a_is_new = node_a not in vertices
@@ -110,8 +100,7 @@ class Graph(object):
                 return True
         return False
 
-
-    def _remove_edge(self, edge_tobe_removed:Set[str]) -> bool:
+    def _remove_edge(self, edge_tobe_removed: Set[str]) -> bool:
         node_a, node_b = edge_tobe_removed
         if node_a in self._graph_dict[node_b] and node_b in self._graph_dict[node_a]:
             self._graph_dict[node_a].remove(node_b)
@@ -120,17 +109,15 @@ class Graph(object):
         else:
             return False
 
-
-    def initialize_from_dict(self, d:dict) -> bool:
+    def initialize_from_dict(self, d: dict) -> bool:
         self._graph_dict = deepcopy(d)
         return True
 
-
-    def initialize_from_file(self, filePath:str, delimiter:str=' ') -> bool:
+    def initialize_from_file(self, filePath: str, delimiter: str = " ") -> bool:
         try:
             f = open(filePath)
         except FileNotFoundError:
-            print(f'File not exits: {filePath}')
+            print(f"File not exits: {filePath}")
             return False
 
         self._graph_dict = dict()
@@ -145,17 +132,17 @@ class Graph(object):
                 pass
         return True
 
-
-    def get_adjacent_vertices(self, vertex:str) -> List[str]:
+    def get_adjacent_vertices(self, vertex: str) -> List[str]:
         if vertex in self.vertex_collection:
             return list(self._graph_dict[vertex])
         else:
-            return [f'{vertex} not in graph']
+            return [f"{vertex} not in graph"]
 
-
-    # This function can potentially run faster if introduced a 
+    # This function can potentially run faster if introduced a
     # visted list which keeps track of all visited nodes
-    def find_simple_path_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[str]:
+    def find_simple_path_dfs_recursive(
+        self, start_vertex: str, end_vertex: str, track: List[str] = None
+    ) -> List[str]:
         if track is None:
             all_vertices = self.vertex_collection
             if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
@@ -168,13 +155,16 @@ class Graph(object):
         for vertex in self._graph_dict[start_vertex]:
             if not (vertex in track):
                 tmp_track = track + [vertex]
-                path = self.find_simple_path_dfs_recursive(vertex, end_vertex, tmp_track)
+                path = self.find_simple_path_dfs_recursive(
+                    vertex, end_vertex, tmp_track
+                )
                 if path is not None:
                     return path
         return None
 
-
-    def find_all_simple_paths_dfs_recursive(self, start_vertex:str, end_vertex:str, track:List[str]=None) -> List[List[str]]:
+    def find_all_simple_paths_dfs_recursive(
+        self, start_vertex: str, end_vertex: str, track: List[str] = None
+    ) -> List[List[str]]:
         if track is None:
             all_vertices = self.vertex_collection
             if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
@@ -188,11 +178,12 @@ class Graph(object):
         for vertex in self._graph_dict[start_vertex]:
             if vertex not in track:
                 tmp_track = track + [vertex]
-                all_paths += self.find_all_simple_paths_dfs_recursive(vertex, end_vertex, tmp_track)
+                all_paths += self.find_all_simple_paths_dfs_recursive(
+                    vertex, end_vertex, tmp_track
+                )
         return all_paths
 
-
-    def find_cluster_dfs(self, vertex:str) -> List[str]:
+    def find_cluster_dfs(self, vertex: str) -> List[str]:
         if not vertex in self.vertex_collection:
             return []
 
@@ -211,7 +202,6 @@ class Graph(object):
 
         return vertices
 
-
     def find_all_clusters_dfs(self) -> List[Set[str]]:
         clusters = []
         for v in self.vertex_collection:
@@ -220,15 +210,14 @@ class Graph(object):
                 clusters.append(c)
         return clusters
 
-
-    def find_simple_path_dfs(self, start_vertex:str, end_vertex:str) -> List[str]:
+    def find_simple_path_dfs(self, start_vertex: str, end_vertex: str) -> List[str]:
         all_vertices = self.vertex_collection
         if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
             return []
 
         stack = [[start_vertex]]
         visited = [start_vertex]
-        
+
         while stack:
             path = stack.pop()
             node = path[-1]
@@ -239,11 +228,12 @@ class Graph(object):
                 if adjacent not in visited:
                     visited.append(adjacent)
                     stack.append(path + [adjacent])
-        
+
         return []
 
- 
-    def find_all_simple_paths_dfs(self, start_vertex:str, end_vertex:str) -> List[List[str]]:
+    def find_all_simple_paths_dfs(
+        self, start_vertex: str, end_vertex: str
+    ) -> List[List[str]]:
         all_vertices = self.vertex_collection
         if (start_vertex not in all_vertices) or (end_vertex not in all_vertices):
             return []
@@ -264,8 +254,7 @@ class Graph(object):
 
         return all_paths
 
-
-    def is_connected_with_dfs(self, vertex_a:str, vertex_b:str) -> bool:
+    def is_connected_with_dfs(self, vertex_a: str, vertex_b: str) -> bool:
         all_vertices = self.vertex_collection
         if (vertex_a not in all_vertices) or (vertex_b not in all_vertices):
             return False
@@ -285,8 +274,7 @@ class Graph(object):
 
         return False
 
-
-    def find_cluster_bfs(self, vertex:str) -> List[str]:
+    def find_cluster_bfs(self, vertex: str) -> List[str]:
         if not vertex in self.vertex_collection:
             return []
 
@@ -305,30 +293,27 @@ class Graph(object):
 
         return vertices
 
-
     # new universal search methods
-    def _func_search_check_input(self, mode:str, *args) -> bool:
-        if mode not in ['dfs', 'bfs']:
+    def _func_search_check_input(self, mode: str, *args) -> bool:
+        if mode not in ["dfs", "bfs"]:
             return False
         for vertex in args:
             if vertex not in self.vertex_collection:
                 return False
         return True
 
-
-    def _func_search_parse_mode(self, mode:str) -> Tuple:
-        if mode == 'dfs':
+    def _func_search_parse_mode(self, mode: str) -> Tuple:
+        if mode == "dfs":
             stack_pop_index = -1
             sort_order_reverse = True
-        elif mode == 'bfs':
+        elif mode == "bfs":
             stack_pop_index = 0
             sort_order_reverse = False
         return stack_pop_index, sort_order_reverse
-        
 
-    def find_cluster(self, vertex:str, mode:str='dfs') -> List[str]:
+    def find_cluster(self, vertex: str, mode: str = "dfs") -> List[str]:
         if not self._func_search_check_input(mode, vertex):
-            raise ValueError('please check your input arguments')
+            raise ValueError("please check your input arguments")
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
         vertices = []
@@ -346,10 +331,9 @@ class Graph(object):
 
         return vertices
 
-
-    def find_all_clusters(self, mode:str='dfs') -> List[Set[str]]:
+    def find_all_clusters(self, mode: str = "dfs") -> List[Set[str]]:
         if not self._func_search_check_input(mode):
-            raise ValueError('please check your input arguments')
+            raise ValueError("please check your input arguments")
 
         clusters = []
         for v in self.vertex_collection:
@@ -358,15 +342,16 @@ class Graph(object):
                 clusters.append(c)
         return clusters
 
-
-    def find_simple_path(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[str]:
+    def find_simple_path(
+        self, start_vertex: str, end_vertex: str, mode: str = "dfs"
+    ) -> List[str]:
         if not self._func_search_check_input(mode, start_vertex, end_vertex):
-            raise ValueError('please check your input arguments')
+            raise ValueError("please check your input arguments")
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
         stack = [[start_vertex]]
         visited = [start_vertex]
-        
+
         while stack:
             path = stack.pop(pop_index)
             node = path[-1]
@@ -377,13 +362,14 @@ class Graph(object):
                 if adjacent not in visited:
                     visited.append(adjacent)
                     stack.append(path + [adjacent])
-        
+
         return []
 
- 
-    def find_all_simple_paths(self, start_vertex:str, end_vertex:str, mode:str='dfs') -> List[List[str]]:
+    def find_all_simple_paths(
+        self, start_vertex: str, end_vertex: str, mode: str = "dfs"
+    ) -> List[List[str]]:
         if not self._func_search_check_input(mode, start_vertex, end_vertex):
-            raise ValueError('please check your input arguments')
+            raise ValueError("please check your input arguments")
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
         stack = [[start_vertex]]
@@ -402,10 +388,11 @@ class Graph(object):
 
         return all_paths
 
-
-    def is_connected_with(self, vertex_a:str, vertex_b:str, mode:str='dfs') -> bool:
+    def is_connected_with(
+        self, vertex_a: str, vertex_b: str, mode: str = "dfs"
+    ) -> bool:
         if not self._func_search_check_input(mode, vertex_a, vertex_b):
-            raise ValueError('please check your input arguments')
+            raise ValueError("please check your input arguments")
         pop_index, order_reverse = self._func_search_parse_mode(mode)
 
         stack = [vertex_a]
@@ -422,8 +409,3 @@ class Graph(object):
                     stack.append(adjacent)
 
         return False
-
-
-
-
-
